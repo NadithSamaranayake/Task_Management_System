@@ -4,21 +4,23 @@ class Node
 {
     int tID; //Task ID
     String tName; //Task name;
-    int tHours;
-    int tPriority;
-    double tETime;
-    String tState;
-    Node prev;
-    Node next;
+    int tHours; //Total hours for the day
+    int tPriority;  //Task priority number
+    double tETime;  //Task execution time
+    String tState;  //Task completion state (completed, failed, pending)
+    Node prev; //Previous Node
+    Node next; //Next Node
 }
 class LinkedList
 {
     Node head;
+
+    Node temp;
     public LinkedList()
     {
         head = null;
     }
-    public void insert(int id, String name, int priority, double etime,String status,int hours)
+    public void insert(int id, String name, int priority, double etime, String status, int hours)
     {
         if(head == null)
         {
@@ -34,7 +36,7 @@ class LinkedList
         else
         {
             Node current = head;
-            while (current != null)
+            while (current.next != null)
             {
                 current = current.next;
             }
@@ -44,59 +46,157 @@ class LinkedList
             n1.tPriority = priority;
             n1.tETime = etime;
             n1.tState = status;
+            n1.tHours = hours;
             current.next = n1;
-            head = n1;
             head.prev = current;
+            temp = head;
         }
     }
-    public int taskID()
+    public void priorityAsc() {
+        boolean sorted = false;
+        while (!sorted)
+        {
+            sorted = true;
+            Node current = head;
+            Node previous = null;
+            while (current != null && current.next != null)
+            {
+                if (current.tPriority > current.next.tPriority)
+                {
+                    if (previous == null)
+                    {
+                        head = current.next;
+                    }
+                    else
+                    {
+                        previous.next = current.next;
+                    }
+                    Node temp = current.next;
+                    current.next = temp.next;
+                    temp.next = current;
+                    previous = temp;
+                    sorted = false;
+                }
+                else
+                {
+                    previous = current;
+                    current = current.next;
+                }
+            }
+        }
+    }
+    public void priorityDesc()
+    {
+        boolean sorted = false;
+        while (!sorted)
+        {
+            sorted = true;
+            Node current = head;
+            Node previous = null;
+            while (current != null && current.next != null)
+            {
+                if (current.tPriority < current.next.tPriority)
+                {
+                    if (previous == null)
+                    {
+                        head = current.next;
+                    }
+                    else
+                    {
+                        previous.next = current.next;
+                    }
+                    Node temp = current.next;
+                    current.next = temp.next;
+                    temp.next = current;
+                    previous = temp;
+                    sorted = false;
+                }
+                else
+                {
+                    previous = current;
+                    current = current.next;
+                }
+            }
+        }
+    }
+    public void exectuionAsc()
+    {
+        boolean sorted = false;
+        while (!sorted)
+        {
+            sorted = true;
+            Node current = head;
+            Node previous = null;
+            while (current != null && current.next != null)
+            {
+                if (current.tETime > current.next.tETime)
+                {
+                    if (previous == null)
+                    {
+                        head = current.next;
+                    }
+                    else
+                    {
+                        previous.next = current.next;
+                    }
+                    Node temp = current.next;
+                    current.next = temp.next;
+                    temp.next = current;
+                    previous = temp;
+                    sorted = false;
+                }
+                else
+                {
+                    previous = current;
+                    current = current.next;
+                }
+            }
+        }
+    }
+    public void executionDesc()
+    {
+        boolean sorted = false;
+        while (!sorted)
+        {
+            sorted = true;
+            Node current = head;
+            Node previous = null;
+            while (current != null && current.next != null)
+            {
+                if (current.tETime < current.next.tETime)
+                {
+                    if (previous == null)
+                    {
+                        head = current.next;
+                    }
+                    else
+                    {
+                        previous.next = current.next;
+                    }
+                    Node temp = current.next;
+                    current.next = temp.next;
+                    temp.next = current;
+                    previous = temp;
+                    sorted = false;
+                }
+                else
+                {
+                    previous = current;
+                    current = current.next;
+                }
+            }
+        }
+    }
+
+    public void display()
     {
         Node current = head;
         while (current != null)
         {
-            int taskID = current.tID;
+            System.out.println(current.tName);
             current = current.next;
-            return taskID;
         }
-        return -1;
-    }
-    public String taskName()
-    {
-        Node current = head;
-        while(current != null)
-        {
-            String taskName = current.tName;
-            current = current.next;
-            return  taskName;
-        }
-        return "No name";
-    }
-    public int totalHours()
-    {
-        Node current = head;
-        while(current != null)
-        {
-            int tHours = current.tHours;
-            current = current.next;
-            return tHours;
-        }
-        return -1;
-    }
-    public void  display()
-    {
-
-    }
-
-}
-class sort
-{
-    public void sortPAsc()
-    {
-
-    }
-    public void sortPDesc()
-    {
-
+        System.out.println("\nNo more values!!!");
     }
 }
 public class main2
@@ -117,6 +217,7 @@ public class main2
         tHours = sc.nextInt();
         for(int i=0; i<tCount; i++)
         {
+            System.out.println("---------------------------------------------------------------------------------------------------");
             System.out.print("Enter task name: ");
             tname = sc.next();
             tname += sc.nextLine();
@@ -141,24 +242,24 @@ public class main2
         sOrder = sc.next();
         if(sOrder == "pasc")
         {
-
+            lst.priorityAsc();
         }
         else if(sOrder == "pdesc")
         {
-
+            lst.priorityDesc();
         }
         else if(sOrder == "easc")
         {
-
+            lst.exectuionAsc();
         }
         else if(sOrder == "edesc")
         {
-
+            lst.executionDesc();
         }
         else
         {
             System.out.print("Enter valid answer: ");
         }
-        sOrder = sc.next();
+       //lst.display();
     }
 }
