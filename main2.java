@@ -1,4 +1,5 @@
 import java.util.Scanner;
+
 class Node {
     int tID; //Task ID
     String tName; //Task name;
@@ -219,7 +220,7 @@ class AVLNodeByPriority {
 
     AVLNodeByPriority(Node data) {
         this.data = data;
-        this.priority = data.tPriority; // Assuming priority is the same as the value for simplicity
+        this.priority = data.tPriority;
         this.height = 1;
         this.left = null;
         this.right = null;
@@ -324,7 +325,7 @@ class AVLNodeByTime {
 
     AVLNodeByTime(Node data) {
         this.data = data;
-        this.tETime = data.tETime; // Set the execution time as the value for comparison
+        this.tETime = data.tETime;
         this.height = 1;
         this.left = null;
         this.right = null;
@@ -433,7 +434,8 @@ class AVLTreeByTime {
     }
 }
 
-public class main2 {
+
+class main2 {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         LinkedList lst = new LinkedList();
@@ -490,7 +492,6 @@ public class main2 {
                 break;
         }
         //lst.display();
-
         AVLTreeByPriority avlTreeByPriority = new AVLTreeByPriority();
         Node current = lst.head;
         while (current != null) {
