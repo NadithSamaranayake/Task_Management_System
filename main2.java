@@ -11,10 +11,19 @@ class Node
     Node prev; //Previous Node
     Node next; //Next Node
 }
+class Node2
+{
+    String tName;
+    int tPriority;
+    double tETime;
+    String tState;
+    Node prev;
+    Node next;
+}
 class LinkedList
 {
     Node head;
-
+    ETask et = new ETask();
     Node temp;
     public LinkedList()
     {
@@ -187,7 +196,28 @@ class LinkedList
             }
         }
     }
-
+    public void tCanBDone() //Method to calculate the tasks which can be done in the given time frame
+    {
+        int tHours = head.tHours;
+        tHours = tHours*60;
+        Node current = head;
+        int tMinutes = 0;
+        while(current != null)
+        {
+            if(tHours > tMinutes)
+            {
+                tMinutes += (int) current.tETime;
+                displayCTasks(current);
+            }
+            current = current.next;
+        }
+    }
+    public void displayCTasks(Node node)
+    {
+        System.out.println(node.tPriority);
+        System.out.println(node.tName);
+        System.out.println(node.tETime);
+    }
     public void display()
     {
         Node current = head;
@@ -197,6 +227,25 @@ class LinkedList
             current = current.next;
         }
         System.out.println("\nNo more values!!!");
+    }
+}
+class ETask //Executing Tasks
+{
+    Node2 head;
+    public ETask()
+    {
+        head = null;
+    }
+    public void insert(String tName, double eTime, int tPriority, String tState)
+    {
+        if(head == null)
+        {
+            Node2 n1 = new Node2();
+            n1.tName = tName;
+            n1.tETime = eTime;
+            n1.tPriority = tPriority;
+            n1.tState = tState;
+        }
     }
 }
 public class main2
@@ -240,25 +289,23 @@ public class main2
         System.out.println("If you want to execute the tasks according to their execution time descending order, type edesc");
         System.out.print("Type your answer: ");
         sOrder = sc.next();
-        if(sOrder == "pasc")
-        {
-            lst.priorityAsc();
-        }
-        else if(sOrder == "pdesc")
-        {
-            lst.priorityDesc();
-        }
-        else if(sOrder == "easc")
-        {
-            lst.exectuionAsc();
-        }
-        else if(sOrder == "edesc")
-        {
-            lst.executionDesc();
-        }
-        else
-        {
-            System.out.print("Enter valid answer: ");
+        switch (sOrder) {
+            case "pasc":
+                lst.priorityAsc();
+                lst.display();
+                break;
+            case "pdesc":
+                lst.priorityDesc();
+                break;
+            case "easc":
+                lst.exectuionAsc();
+                break;
+            case "edesc":
+                lst.executionDesc();
+                break;
+            default:
+                System.out.print("Enter valid answer: ");
+                break;
         }
        //lst.display();
     }
