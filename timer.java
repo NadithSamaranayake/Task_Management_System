@@ -7,7 +7,7 @@ public class timer {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter time: ");
         int seconds = sc.nextInt();
-        //int seconds = 10; // Set the countdown time in seconds
+        //int seconds   = 10; // Set the countdown time in seconds
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
