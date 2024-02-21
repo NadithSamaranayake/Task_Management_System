@@ -163,7 +163,8 @@ class LinkedList
         }
     }
 
-    public void displayCTasks(Node node) {
+    public void displayCTasks(Node node)
+    {
         System.out.println(node.tPriority);
         System.out.println(node.tName);
         System.out.println(node.tETime);
@@ -184,6 +185,10 @@ class LinkedList
 
 
 class AVLNodeByPriority {
+    int tID; //Task ID
+    String tName; //Task name;
+    double tETime;  //Task execution time
+    String tState;  //Task completion state (completed, failed, pending)
     int priority;
     Node data;
     int height;
@@ -191,6 +196,10 @@ class AVLNodeByPriority {
     AVLNodeByPriority right;
 
     AVLNodeByPriority(Node data) {
+        this.tID = data.tID;
+        this.tName = data.tName;
+        this.tETime = data.tETime;
+        this.tState = data.tState;
         this.data = data;
         this.priority = data.tPriority;
         this.height = 1;
@@ -297,24 +306,42 @@ class AVLTreeByPriority {
     }
     void ETask() //Method to start focus session
     {
+        System.out.println("Start");
+        Scanner sc = new Scanner(System.in);
+        final String[] conf = new String[1];
         AVLNodeByPriority current = root;
-        while (current != null)
+        while (current.right != null )
         {
-
-            int seconds = 0;
+            System.out.println("looping");
+            double seconds = current.tETime;
             //int seconds = 10; // Set the countdown time in seconds
 
             Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
-                int countdown = seconds;
+                double countdown = seconds;
 
                 @Override
                 public void run() {
+                    System.out.print("thread start");
                     System.out.print(countdown+"\r");
 
                     if (countdown <= 0) {
-                        System.out.println("Countdown complete!");
+                        System.out.println("Did you completed the task? (y/n): ");
+                        current.tState = sc.next();
                         timer.cancel(); // Stop the timer
+                        /*System.out.print("Do you wish to continue to the next task (y/n): ");
+                        conf[0] = sc.next();
+                        switch (conf[0])
+                        {
+                            case "n":
+                                System.out.print("End of focus session!");
+                                break;
+                            case "N":
+                                System.out.print("End of focus session!");
+                                break;
+                            default:
+                                System.out.print("Enter valid input: ");
+                        }*/
                     }
 
                     countdown--;
@@ -324,6 +351,10 @@ class AVLTreeByPriority {
     }
 }
 class AVLNodeByTime {
+    int tID; //Task ID
+    String tName; //Task name;
+    int tPriority;  //Task priority number
+    String tState;  //Task completion state (completed, failed, pending)
     double tETime;
     Node data;
     int height;
@@ -332,6 +363,10 @@ class AVLNodeByTime {
 
     AVLNodeByTime(Node data)
     {
+        this.tID = data.tID;
+        this.tName = data.tName;
+        this.tPriority = data.tPriority;
+        this.tState = data.tState;
         this.data = data;
         this.tETime = data.tETime;
         this.height = 1;
@@ -559,8 +594,10 @@ class main2
         switch (conf)
         {
             case "y":
+                avlTreeByPriority.ETask();
                 break;
             case "Y":
+                avlTreeByPriority.ETask();
                 break;
             case "n":
                 break;
