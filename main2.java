@@ -304,50 +304,41 @@ class AVLTreeByPriority {
     {
         inorderTraversal(root);
     }
-    void ETask() //Method to start focus session
-    {
+    void ETask() {
         System.out.println("Start");
         Scanner sc = new Scanner(System.in);
-        final String[] conf = new String[1];
-        AVLNodeByPriority current = root;
-        while (current.right != null )
-        {
-            System.out.println("looping");
-            double seconds = current.tETime;
-            //int seconds = 10; // Set the countdown time in seconds
-
+        AVLNodeByPriority[] current = {root};
+        while (current[0] != null) {
+            AVLNodeByPriority currentNode = current[0];
+            System.out.println("Task: " + currentNode.data.tName);
+            double seconds = currentNode.data.tETime * 60;
             Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
+            timer.schedule(new TimerTask() {
                 double countdown = seconds;
-
                 @Override
                 public void run() {
-                    System.out.print("thread start");
-                    System.out.print(countdown+"\r");
-
-                    if (countdown <= 0) {
-                        System.out.println("Did you completed the task? (y/n): ");
-                        current.tState = sc.next();
-                        timer.cancel(); // Stop the timer
-                        /*System.out.print("Do you wish to continue to the next task (y/n): ");
-                        conf[0] = sc.next();
-                        switch (conf[0])
-                        {
-                            case "n":
-                                System.out.print("End of focus session!");
-                                break;
-                            case "N":
-                                System.out.print("End of focus session!");
-                                break;
-                            default:
-                                System.out.print("Enter valid input: ");
-                        }*/
-                    }
-
+                    System.out.print("\rTask in progress: " + currentNode.data.tName);
+                    System.out.print(" Time left: " + countdown / 60 + " minutes");
                     countdown--;
+                    if (countdown <= 0) {
+                        System.out.println("\nTask completed: " + currentNode.data.tName);
+                        timer.cancel();
+                        System.out.println("....................................................................");
+                    }
                 }
-            }, 0, 60000); // Schedule the task to run every 1000 milliseconds (1 second)
+            }, 0, 1000);
+            System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
+            String choice = sc.next();
+            if (choice.equalsIgnoreCase("n")) {
+                current[0] = currentNode.right;
+            } else if (choice.equalsIgnoreCase("q")) {
+                break;
+            } else {
+                System.out.println("Invalid choice. Exiting.");
+                break;
+            }
         }
+        sc.close();
     }
 }
 class AVLNodeByTime {
