@@ -307,8 +307,9 @@ class AVLTreeByPriority {
     void ETask() {
         System.out.println("Start");
         Scanner sc = new Scanner(System.in);
-        AVLNodeByPriority[] current = {root};
-        while (current[0] != null) {
+        AVLNodeByPriority[] current = {root.left};
+        while (current[0] != null)
+        {
             AVLNodeByPriority currentNode = current[0];
             System.out.println("Task: " + currentNode.data.tName);
             double seconds = currentNode.data.tETime * 60;
@@ -339,6 +340,31 @@ class AVLTreeByPriority {
             }
         }
         sc.close();
+    }
+    void ETask2()
+    {
+        AVLNodeByPriority current = root;
+        while (current.right != null)
+        {
+            double minutes = current.left.tETime;
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                double countdown = minutes;
+
+                @Override
+                public void run() {
+                    System.out.print(countdown+"\r");
+
+                    if (countdown <= 0) {
+                        System.out.println("Countdown complete!");
+                        timer.cancel(); // Stop the timer
+                    }
+
+                    countdown--;
+                }
+            }, 0, 60000); // Schedule the task to run every 1000 milliseconds (1 second)
+            current = current.right;
+        }
     }
 }
 class AVLNodeByTime {
