@@ -187,7 +187,8 @@ class LinkedList
 
 
 
-class AVLNodeByPriority {
+class AVLNodeByPriority //The Node class for the AVL Tree sorting with priority
+{
     int tID; //Task ID
     String tName; //Task name;
     double tETime;  //Task execution time
@@ -348,7 +349,7 @@ class AVLTreeByPriority {
             getSortedTasks(node.right, sortedTasks);
         }
     }
-    void display()
+    void display() //The method to display the task details
     {
         // Print the sorted values in a table
         System.out.println("+----------------------+------------+---------------+-------------------+");
@@ -368,7 +369,7 @@ class AVLTreeByPriority {
     }
 
 }
-class AVLNodeByTime {
+class AVLNodeByTime { //The class for the AVL Tree sorting by time
     int tID; //Task ID
     String tName; //Task name;
     int tPriority;  //Task priority number
@@ -437,7 +438,8 @@ class AVLTreeByTime
         return height(node.left) - height(node.right);
     }
 
-    AVLNodeByTime insert(AVLNodeByTime node, Node data) {
+    AVLNodeByTime insert(AVLNodeByTime node, Node data) //The method to insert the values into the avl tree
+    {
         if (node == null)
             return new AVLNodeByTime(data);
 
