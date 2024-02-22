@@ -320,7 +320,7 @@ class AVLTreeByPriority {
                 @Override
                 public void run() {
                     System.out.print("\rTask in progress: " + node.data.tName);
-                    System.out.print(" Time left: " + countdown / 60 + " minutes");
+                    System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
                     countdown--;
                     if (countdown <= 0) {
                         System.out.println("\nTask completed: " + node.data.tName);
@@ -478,6 +478,52 @@ class AVLTreeByTime
     void inorderHighToLow() {
         inorderTraversalHighToLow(root);
     }
+
+    void ETask(boolean isAscending) {
+        System.out.println("Start");
+        Scanner sc = new Scanner(System.in);
+        ArrayList<AVLNodeByTime> sortedTasks = new ArrayList<>();
+        getSortedTasks(root, sortedTasks, isAscending);
+        for (AVLNodeByTime node : sortedTasks) {
+            System.out.println("Task: " + node.data.tName);
+            double seconds = node.data.tETime * 60; // Convert minutes to seconds
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                double countdown = seconds;
+
+                @Override
+                public void run() {
+                    System.out.print("\rTask in progress: " + node.data.tName);
+                    System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
+                    countdown--;
+                    if (countdown <= 0) {
+                        System.out.println("\nTask completed: " + node.data.tName);
+                        timer.cancel(); // Stop the timer
+                    }
+                }
+            }, 0, 1000); // Schedule the task to run every second
+            System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
+            String choice = sc.next();
+            if (choice.equalsIgnoreCase("q")) {
+                break;
+            }
+        }
+        sc.close();
+    }
+
+    void getSortedTasks(AVLNodeByTime node, ArrayList<AVLNodeByTime> sortedTasks, boolean isAscending) {
+        if (node != null) {
+            if (isAscending) {
+                getSortedTasks(node.left, sortedTasks, isAscending);
+                sortedTasks.add(node);
+                getSortedTasks(node.right, sortedTasks, isAscending);
+            } else {
+                getSortedTasks(node.right, sortedTasks, isAscending);
+                sortedTasks.add(node);
+                getSortedTasks(node.left, sortedTasks, isAscending);
+            }
+        }
+    }
 }
 
 
@@ -587,13 +633,16 @@ class main2
         }
         System.out.println("Would you wish to start completing the tasks in the sorted order (y/n): ");
         String conf = sc.next();
-        switch (conf)
-        {
+        switch (conf) {
             case "y":
-                avlTreeByPriority.ETask();
-                break;
             case "Y":
-                avlTreeByPriority.ETask();
+                if (sort.equalsIgnoreCase("p")) {
+                    avlTreeByPriority.ETask();
+                } else if (sort.equalsIgnoreCase("th")) {
+                    avlTreeByTime.ETask(false); // For time high to low
+                } else if (sort.equalsIgnoreCase("tl")) {
+                    avlTreeByTime.ETask(true); // For time low to high
+                }
                 break;
             case "n":
                 break;
