@@ -438,7 +438,8 @@ class AVLTreeByTime
         return height(node.left) - height(node.right);
     }
 
-    AVLNodeByTime insert(AVLNodeByTime node, Node data) {
+    AVLNodeByTime insert(AVLNodeByTime node, Node data) //The method to insert the values into the avl tree
+    {
         if (node == null)
             return new AVLNodeByTime(data);
 
