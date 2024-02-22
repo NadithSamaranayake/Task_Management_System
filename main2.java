@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -307,65 +308,43 @@ class AVLTreeByPriority {
     void ETask() {
         System.out.println("Start");
         Scanner sc = new Scanner(System.in);
-        AVLNodeByPriority[] current = {root.left};
-        while (current[0] != null)
-        {
-            AVLNodeByPriority currentNode = current[0];
-            System.out.println("Task: " + currentNode.data.tName);
-            double seconds = currentNode.data.tETime * 60;
+        ArrayList<AVLNodeByPriority> sortedTasks = new ArrayList<>();
+        getSortedTasks(root, sortedTasks);
+        for (AVLNodeByPriority node : sortedTasks) {
+            System.out.println("Task: " + node.data.tName);
+            double seconds = node.data.tETime * 60; // Convert minutes to seconds
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 double countdown = seconds;
+
                 @Override
                 public void run() {
-                    System.out.print("\rTask in progress: " + currentNode.data.tName);
+                    System.out.print("\rTask in progress: " + node.data.tName);
                     System.out.print(" Time left: " + countdown / 60 + " minutes");
                     countdown--;
                     if (countdown <= 0) {
-                        System.out.println("\nTask completed: " + currentNode.data.tName);
-                        timer.cancel();
-                        System.out.println("....................................................................");
+                        System.out.println("\nTask completed: " + node.data.tName);
+                        timer.cancel(); // Stop the timer
                     }
                 }
-            }, 0, 1000);
+            }, 0, 1000); // Schedule the task to run every second
             System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
             String choice = sc.next();
-            if (choice.equalsIgnoreCase("n")) {
-                current[0] = currentNode.right;
-            } else if (choice.equalsIgnoreCase("q")) {
-                break;
-            } else {
-                System.out.println("Invalid choice. Exiting.");
+            if (choice.equalsIgnoreCase("q")) {
                 break;
             }
         }
         sc.close();
     }
-    void ETask2()
-    {
-        AVLNodeByPriority current = root;
-        while (current.right != null)
-        {
-            double minutes = current.left.tETime;
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                double countdown = minutes;
 
-                @Override
-                public void run() {
-                    System.out.print(countdown+"\r");
-
-                    if (countdown <= 0) {
-                        System.out.println("Countdown complete!");
-                        timer.cancel(); // Stop the timer
-                    }
-
-                    countdown--;
-                }
-            }, 0, 60000); // Schedule the task to run every 1000 milliseconds (1 second)
-            current = current.right;
+    void getSortedTasks(AVLNodeByPriority node, ArrayList<AVLNodeByPriority> sortedTasks) {
+        if (node != null) {
+            getSortedTasks(node.left, sortedTasks);
+            sortedTasks.add(node);
+            getSortedTasks(node.right, sortedTasks);
         }
     }
+
 }
 class AVLNodeByTime {
     int tID; //Task ID
