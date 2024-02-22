@@ -637,9 +637,9 @@ class main2
             case "Y":
                 if (sort.equalsIgnoreCase("p")) {
                     avlTreeByPriority.ETask();
-                } else if (sort.equalsIgnoreCase("th")) {
+                } else if (sort.equalsIgnoreCase("td")) {
                     avlTreeByTime.ETask(false); // For time high to low
-                } else if (sort.equalsIgnoreCase("tl")) {
+                } else if (sort.equalsIgnoreCase("ta")) {
                     avlTreeByTime.ETask(true); // For time low to high
                 }
                 break;
