@@ -559,8 +559,8 @@ class main2
         }
 
         System.out.println("If you want to execute the tasks according to their priority ascending order, type p");
-        System.out.println("If you want to sort tasks by time (Highest time to lowest),type th");
-        System.out.println("If you want to sort tasks by time (Lowest time to highest),type tl");
+        System.out.println("If you want to sort tasks by time (Highest time to lowest),type td");
+        System.out.println("If you want to sort tasks by time (Lowest time to highest),type ta");
         sort = sc.next();
         switch (sort)
         {
@@ -570,15 +570,15 @@ class main2
             case "p":
                 avlTreeByPriority.inorder();
                 break;
-            case "TH":
+            case "TD":
                 avlTreeByTime.inorderHighToLow();
-            case "th":
+            case "td":
                 avlTreeByTime.inorderHighToLow();
                 break;
-            case "TL":
+            case "TA":
                 avlTreeByTime.inorderLowToHigh();
                 break;
-            case "tl":
+            case "ta":
                 avlTreeByTime.inorderLowToHigh();
                 break;
             default:
