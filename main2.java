@@ -187,7 +187,8 @@ class LinkedList
 
 
 
-class AVLNodeByPriority {
+class AVLNodeByPriority //The Node class for the AVL Tree sorting with priority
+{
     int tID; //Task ID
     String tName; //Task name;
     double tETime;  //Task execution time
