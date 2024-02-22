@@ -349,7 +349,7 @@ class AVLTreeByPriority {
             getSortedTasks(node.right, sortedTasks);
         }
     }
-    void display()
+    void display() //The method to display the task details
     {
         // Print the sorted values in a table
         System.out.println("+----------------------+------------+---------------+-------------------+");
@@ -369,7 +369,7 @@ class AVLTreeByPriority {
     }
 
 }
-class AVLNodeByTime {
+class AVLNodeByTime { //The class for the AVL Tree sorting by time
     int tID; //Task ID
     String tName; //Task name;
     int tPriority;  //Task priority number
