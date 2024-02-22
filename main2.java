@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.List;
+import java.util.ArrayList;
 
 class Node {
     int tID; //Task ID
@@ -292,11 +294,12 @@ class AVLTreeByPriority {
     {
         root = insert(root, data);
     }
-
+    List<String> sortedValues = new ArrayList<>(); // Define a list to store sorted values
     void inorderTraversal(AVLNodeByPriority root) {
         if (root != null) {
             inorderTraversal(root.left);
             System.out.println(root.data.tName + " " + root.data.tPriority);
+            sortedValues.add(root.data.tName + " " + root.data.tPriority + " " + root.data.tETime + " " + root.data.tState); // Add sorted values to the list
             inorderTraversal(root.right);
         }
     }
@@ -329,12 +332,13 @@ class AVLTreeByPriority {
                 }
             }, 0, 1000); // Schedule the task to run every second
             System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
-            String choice = sc.next();
+            String choice = sc.nextLine();
             if (choice.equalsIgnoreCase("q")) {
                 break;
             }
         }
         sc.close();
+        display();
     }
 
     void getSortedTasks(AVLNodeByPriority node, ArrayList<AVLNodeByPriority> sortedTasks) {
@@ -343,6 +347,24 @@ class AVLTreeByPriority {
             sortedTasks.add(node);
             getSortedTasks(node.right, sortedTasks);
         }
+    }
+    void display()
+    {
+        // Print the sorted values in a table
+        System.out.println("+----------------------+------------+---------------+-------------------+");
+        System.out.println("| Task Name            | Priority   | Execution Time| State             |");
+        System.out.println("+----------------------+------------+---------------+-------------------+");
+        for (String value : sortedValues) {
+            String[] parts = value.split(" "); // Split the value by space
+            String taskName = parts[0] + " " + parts[1]+" "+parts[2]; // Combine the first two parts as the task name
+            String priority = parts[3]; // Get the priority
+            String executionTime = parts[4]; // Get the execution time
+            String state = parts[5]; // Get the state
+
+            // Print the values in the table
+            System.out.printf("| %-20s | %-10s | %-14s | %-15s |\n", taskName, priority, executionTime, state);
+        }
+        System.out.println("+----------------------+------------+---------------+-------------------+");
     }
 
 }
@@ -482,6 +504,7 @@ class AVLTreeByTime
     void ETask(boolean isAscending) {
         System.out.println("Start");
         Scanner sc = new Scanner(System.in);
+        Scanner sc2 = new Scanner(System.in);
         ArrayList<AVLNodeByTime> sortedTasks = new ArrayList<>();
         getSortedTasks(root, sortedTasks, isAscending);
         for (AVLNodeByTime node : sortedTasks) {
@@ -498,6 +521,8 @@ class AVLTreeByTime
                     countdown--;
                     if (countdown <= 0) {
                         System.out.println("\nTask completed: " + node.data.tName);
+                        System.out.print("Did you complete the task (y/n): ");
+                        node.data.tState = sc2.next();
                         timer.cancel(); // Stop the timer
                     }
                 }
@@ -533,17 +558,14 @@ class main2
     {
         Scanner sc = new Scanner(System.in);
         LinkedList lst = new LinkedList();
-        int tCount, tHours;
+        int tCount;
         String tname;
         int priority;
         double etime;
         String status;
-        String sOrder;
         String sort;
         System.out.print("Enter number of tasks to be completed: ");
         tCount = sc.nextInt();
-        //System.out.print("Enter number of working hours for the day: ");
-        //tHours = sc.nextInt();
         for (int i = 0; i < tCount; i++)
         {
             System.out.println("---------------------------------------------------------------------------------------------------");
@@ -563,31 +585,6 @@ class main2
             }
             lst.insert(i, tname, priority, etime, status);
         }
-        /*System.out.println("If you want to execute the tasks according to their priority ascending order, type pasc");
-        System.out.println("If you want to exectue the tasks according to their priority descending order, type pdesc");
-        System.out.println("If you want to execute the tasks according to their execution time ascending order, type easc");
-        System.out.println("If you want to execute the tasks according to their execution time descending order, type edesc");
-        System.out.print("Type your answer: ");
-        sOrder = sc.next();
-        switch (sOrder) {
-            case "pasc":
-                lst.priorityAsc();
-                lst.display();
-                break;
-            case "pdesc":
-                lst.priorityDesc();
-                break;
-            case "easc":
-                lst.exectuionAsc();
-                break;
-            case "edesc":
-                lst.executionDesc();
-                break;
-            default:
-                System.out.print("Enter valid answer: ");
-                break;
-        }*/
-        //lst.display();
         AVLTreeByPriority avlTreeByPriority = new AVLTreeByPriority();
         Node current = lst.head;
         while (current != null)
