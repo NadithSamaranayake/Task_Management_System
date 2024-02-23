@@ -441,35 +441,91 @@ class AVLTreeByTime
     void ETask(boolean isAscending) {
         System.out.println("Start");
         Scanner sc = new Scanner(System.in);
-        Scanner sc2 = new Scanner(System.in);
         ArrayList<AVLNodeByTime> sortedTasks = new ArrayList<>();
         getSortedTasks(root, sortedTasks, isAscending);
-        for (AVLNodeByTime node : sortedTasks) {
-            System.out.println("Task: " + node.data.tName);
-            double seconds = node.data.tETime * 60; // Convert minutes to seconds
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                double countdown = seconds;
 
-                @Override
-                public void run() {
-                    System.out.print("\rTask in progress: " + node.data.tName);
-                    System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
-                    countdown--;
-                    if (countdown <= 0) {
-                        System.out.println("\nTask completed: " + node.data.tName);
-                        System.out.print("Did you complete the task (y/n): ");
-                        node.data.tState = sc2.next();
-                        timer.cancel(); // Stop the timer
+        boolean completedAllTasks = true; // Flag to track if all tasks were completed
+
+        for (int i = 0; i < sortedTasks.size(); i++) {
+            AVLNodeByTime node = sortedTasks.get(i);
+            System.out.println("Task: " + node.data.tName);
+            double seconds = node.data.tETime * 60;
+            double countdown = seconds;
+
+            while (countdown > 0) {
+                System.out.print("\rTask in progress: " + node.data.tName);
+                System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
+                countdown -= 1; // Decrement countdown by 1 second
+                try {
+                    Thread.sleep(1000); // Sleep for 1 second
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println("\nTask completed: " + node.data.tName);
+
+            boolean validChoice = false;
+            String choice2 = "";
+            while (!validChoice) {
+                System.out.println("Did you complete the task?(y/n)");
+                choice2 = sc.next();
+                if (choice2.equalsIgnoreCase("y") || choice2.equalsIgnoreCase("n")) {
+                    validChoice = true;
+                } else {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+            }
+
+            if (choice2.equalsIgnoreCase("y")) {
+                node.data.tState = "Completed";
+            } else {
+                node.data.tState = "Failed";
+                completedAllTasks = false; // If any task is not completed, mark all tasks as not completed
+            }
+
+            if (i < sortedTasks.size() - 1) {
+                validChoice = false;
+                String moveNext = "";
+                while (!validChoice) {
+                    System.out.println("Would you like to move to the next task?(y/n)");
+                    moveNext = sc.next();
+                    if (moveNext.equalsIgnoreCase("y") || moveNext.equalsIgnoreCase("n")) {
+                        validChoice = true;
+                    } else {
+                        System.out.println("Invalid input. Please enter 'y' or 'n'.");
                     }
                 }
-            }, 0, 1000); // Schedule the task to run every second
-            System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
-            String choice = sc.next();
-            if (choice.equalsIgnoreCase("q")) {
-                break;
+
+                if (!moveNext.equalsIgnoreCase("y")) {
+                    completedAllTasks = false; // If user chooses not to move to next task, mark all tasks as not completed
+                    System.out.println("Exiting task completion process...");
+                    break;
+                }
             }
         }
+
+        if (completedAllTasks) {
+            System.out.println("All tasks are completed. Hurray!");
+            System.out.println("⠄⠄⠄⠄⢀⣠⣶⣶⣶⣤⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⢀⣠⣤⣄⡀⠄⠄⠄⠄⠄\n" +
+                    "⠄⠄⠄⢠⣾⡟⠁⠄⠈⢻⣿⡀⠄⠄⠄⠄⠄⠄⠄⣼⣿⡿⠋⠉⠻⣷⠄⠄⠄⠄\n" +
+                    "⠄⠄⠄⢸⣿⣷⣄⣀⣠⣿⣿⡇⠄⠄⠄⠄⠄⠄⢰⣿⣿⣇⠄⠄⢠⣿⡇⠄⠄⠄\n" +
+                    "⠄⠄⠄⢸⣿⣿⣿⣿⣿⣿⣿⣦⣤⣤⣤⣤⣤⣤⣼⣿⣿⣿⣿⣿⣿⣿⡇⠄⠄⠄\n" +
+                    "⠄⠄⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠄⠄⠄\n" +
+                    "⠄⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠄⠄\n" +
+                    "⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⡏⣍⡻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢛⣩⡍⣿⣿⣿⣷⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⣇⢿⠻⠮⠭⠭⠭⢭⣭⣭⣭⣛⣭⣭⠶⠿⠛⣽⢱⣿⣿⣿⣿⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⣿⣦⢱⡀⠄⢰⣿⡇⠄⠄⠄⠄⠄⠄⠄⢀⣾⢇⣿⣿⣿⣿⡿⠄\n" +
+                    "⠄⠻⢿⣿⣿⣿⢛⣭⣥⣭⣤⣼⣿⡇⠤⠤⠤⣤⣤⣤⡤⢞⣥⣿⣿⣿⣿⣿⠃⠄\n" +
+                    "⠄⠄⠄⣛⣛⠃⣿⣿⣿⣿⣿⣿⣿⢇⡙⠻⢿⣶⣶⣶⣾⣿⣿⣿⠿⢟⣛⠃⠄⠄\n" +
+                    "⠄⠄⣼⣿⣿⡘⣿⣿⣿⣿⣿⣿⡏⣼⣿⣿⣶⣬⣭⣭⣭⣭⣭⣴⣾⣿⣿⡄⠄⠄\n" +
+                    "⠄⣼⣿⣿⣿⣷⣜⣛⣛⣛⣛⣛⣀⡛⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠄\n" +
+                    "⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣭⣙⣛⣛⣩⣭⣭⣿⣿⣿⣿⣷⡀");
+        } else {
+            System.out.println("Not all tasks were completed.");
+        }
+
         sc.close();
     }
 
