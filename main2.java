@@ -54,135 +54,6 @@ class LinkedList
             temp = head;
         }
     }
-
-    public void priorityAsc()
-    {
-        boolean sorted = false;
-        while (!sorted)
-        {
-            sorted = true;
-            Node current = head;
-            Node previous = null;
-            while (current != null && current.next != null)
-            {
-                if (current.tPriority > current.next.tPriority)
-                {
-                    if (previous == null)
-                    {
-                        head = current.next;
-                    }
-                    else
-                    {
-                        previous.next = current.next;
-                    }
-                    Node temp = current.next;
-                    current.next = temp.next;
-                    temp.next = current;
-                    previous = temp;
-                    sorted = false;
-                } else {
-                    previous = current;
-                    current = current.next;
-                }
-            }
-        }
-    }
-
-    public void priorityDesc() {
-        boolean sorted = false;
-        while (!sorted) {
-            sorted = true;
-            Node current = head;
-            Node previous = null;
-            while (current != null && current.next != null) {
-                if (current.tPriority < current.next.tPriority) {
-                    if (previous == null) {
-                        head = current.next;
-                    } else {
-                        previous.next = current.next;
-                    }
-                    Node temp = current.next;
-                    current.next = temp.next;
-                    temp.next = current;
-                    previous = temp;
-                    sorted = false;
-                } else {
-                    previous = current;
-                    current = current.next;
-                }
-            }
-        }
-    }
-
-    public void exectuionAsc() {
-        boolean sorted = false;
-        while (!sorted) {
-            sorted = true;
-            Node current = head;
-            Node previous = null;
-            while (current != null && current.next != null) {
-                if (current.tETime > current.next.tETime) {
-                    if (previous == null) {
-                        head = current.next;
-                    } else {
-                        previous.next = current.next;
-                    }
-                    Node temp = current.next;
-                    current.next = temp.next;
-                    temp.next = current;
-                    previous = temp;
-                    sorted = false;
-                } else {
-                    previous = current;
-                    current = current.next;
-                }
-            }
-        }
-    }
-
-    public void executionDesc() {
-        boolean sorted = false;
-        while (!sorted) {
-            sorted = true;
-            Node current = head;
-            Node previous = null;
-            while (current != null && current.next != null) {
-                if (current.tETime < current.next.tETime) {
-                    if (previous == null) {
-                        head = current.next;
-                    } else {
-                        previous.next = current.next;
-                    }
-                    Node temp = current.next;
-                    current.next = temp.next;
-                    temp.next = current;
-                    previous = temp;
-                    sorted = false;
-                } else {
-                    previous = current;
-                    current = current.next;
-                }
-            }
-        }
-    }
-
-    public void displayCTasks(Node node)
-    {
-        System.out.println(node.tPriority);
-        System.out.println(node.tName);
-        System.out.println(node.tETime);
-    }
-
-    public void display()
-    {
-        Node current = head;
-        while (current != null)
-        {
-            System.out.println(current.tName);
-            current = current.next;
-        }
-        System.out.println("\nNo more values!!!");
-    }
 }
 
 
@@ -314,32 +185,90 @@ class AVLTreeByPriority {
         Scanner sc = new Scanner(System.in);
         ArrayList<AVLNodeByPriority> sortedTasks = new ArrayList<>();
         getSortedTasks(root, sortedTasks);
-        for (AVLNodeByPriority node : sortedTasks) {
+
+        boolean completedAllTasks = true; // Flag to track if all tasks were completed
+
+        for (int i = 0; i < sortedTasks.size(); i++) {
+            AVLNodeByPriority node = sortedTasks.get(i);
             System.out.println("Task: " + node.data.tName);
             double seconds = node.data.tETime * 60; // Convert minutes to seconds
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                double countdown = seconds;
+            double countdown = seconds;
 
-                @Override
-                public void run() {
-                    System.out.print("\rTask in progress: " + node.data.tName);
-                    System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
-                    countdown--;
-                    if (countdown <= 0) {
-                        System.out.println("\nTask completed: " + node.data.tName);
-                        timer.cancel(); // Stop the timer
+            while (countdown > 0) {
+                System.out.print("\rTask in progress: " + node.data.tName);
+                System.out.print(" Time left: " + String.format("%.2f", countdown / 60) + " minutes");
+                countdown -= 1; // Decrement countdown by 1 second
+                try {
+                    Thread.sleep(1000); // Sleep for 1 second
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println("\nTask completed: " + node.data.tName);
+
+            boolean validChoice = false;
+            String choice2 = "";
+            while (!validChoice) {
+                System.out.println("Did you complete the task?(y/n)");
+                choice2 = sc.next();
+                if (choice2.equalsIgnoreCase("y") || choice2.equalsIgnoreCase("n")) {
+                    validChoice = true;
+                } else {
+                    System.out.println("Invalid input. Please enter 'y' or 'n'.");
+                }
+            }
+
+            if (choice2.equalsIgnoreCase("y")) {
+                node.data.tState = "Completed";
+            } else {
+                node.data.tState = "Failed";
+                completedAllTasks = false; // If any task is failed, mark all tasks as not completed
+            }
+
+            if (i < sortedTasks.size() - 1) {
+                validChoice = false;
+                String moveNext = "";
+                while (!validChoice) {
+                    System.out.println("Would you like to move to the next task?(y/n)");
+                    moveNext = sc.next();
+                    if (moveNext.equalsIgnoreCase("y") || moveNext.equalsIgnoreCase("n")) {
+                        validChoice = true;
+                    } else {
+                        System.out.println("Invalid input. Please enter 'y' or 'n'.");
                     }
                 }
-            }, 0, 1000); // Schedule the task to run every second
-            System.out.println("\nPress 'n' to move to the next task or 'q' to quit: ");
-            String choice = sc.nextLine();
-            if (choice.equalsIgnoreCase("q")) {
-                break;
+
+                if (!moveNext.equalsIgnoreCase("y")) {
+                    completedAllTasks = false; // If user chooses not to move to next task, mark all tasks as not completed
+                    System.out.println("Exiting task completion process...");
+                    break;
+                }
             }
         }
+
+        if (completedAllTasks) {
+            System.out.println("All tasks are completed. Hurray!");
+            System.out.println("⠄⠄⠄⠄⢀⣠⣶⣶⣶⣤⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⢀⣠⣤⣄⡀⠄⠄⠄⠄⠄\n" +
+                    "⠄⠄⠄⢠⣾⡟⠁⠄⠈⢻⣿⡀⠄⠄⠄⠄⠄⠄⠄⣼⣿⡿⠋⠉⠻⣷⠄⠄⠄⠄\n" +
+                    "⠄⠄⠄⢸⣿⣷⣄⣀⣠⣿⣿⡇⠄⠄⠄⠄⠄⠄⢰⣿⣿⣇⠄⠄⢠⣿⡇⠄⠄⠄\n" +
+                    "⠄⠄⠄⢸⣿⣿⣿⣿⣿⣿⣿⣦⣤⣤⣤⣤⣤⣤⣼⣿⣿⣿⣿⣿⣿⣿⡇⠄⠄⠄\n" +
+                    "⠄⠄⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠄⠄⠄\n" +
+                    "⠄⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠄⠄\n" +
+                    "⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⡏⣍⡻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢛⣩⡍⣿⣿⣿⣷⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⣇⢿⠻⠮⠭⠭⠭⢭⣭⣭⣭⣛⣭⣭⠶⠿⠛⣽⢱⣿⣿⣿⣿⠄\n" +
+                    "⠄⣿⣿⣿⣿⣿⣿⣦⢱⡀⠄⢰⣿⡇⠄⠄⠄⠄⠄⠄⠄⢀⣾⢇⣿⣿⣿⣿⡿⠄\n" +
+                    "⠄⠻⢿⣿⣿⣿⢛⣭⣥⣭⣤⣼⣿⡇⠤⠤⠤⣤⣤⣤⡤⢞⣥⣿⣿⣿⣿⣿⠃⠄\n" +
+                    "⠄⠄⠄⣛⣛⠃⣿⣿⣿⣿⣿⣿⣿⢇⡙⠻⢿⣶⣶⣶⣾⣿⣿⣿⠿⢟⣛⠃⠄⠄\n" +
+                    "⠄⠄⣼⣿⣿⡘⣿⣿⣿⣿⣿⣿⡏⣼⣿⣿⣶⣬⣭⣭⣭⣭⣭⣴⣾⣿⣿⡄⠄⠄\n" +
+                    "⠄⣼⣿⣿⣿⣷⣜⣛⣛⣛⣛⣛⣀⡛⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠄\n" +
+                    "⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣭⣙⣛⣛⣩⣭⣭⣿⣿⣿⣿⣷⡀");
+        } else {
+            System.out.println("Not all tasks were completed.");
+        }
+
         sc.close();
-        display();
     }
 
     void getSortedTasks(AVLNodeByPriority node, ArrayList<AVLNodeByPriority> sortedTasks) {
