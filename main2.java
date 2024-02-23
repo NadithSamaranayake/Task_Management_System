@@ -545,102 +545,146 @@ class AVLTreeByTime
 }
 
 
-class main2
-{
+class Main {
     public static void main(String[] args)
     {
+        System .out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("                                                                           Task Management System");
+        System .out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
         Scanner sc = new Scanner(System.in);
         LinkedList lst = new LinkedList();
-        int tCount;
+        int tCount = 0;
         String tname;
-        int priority;
-        double etime;
+        int priority = 0;
+        double etime = 0;
         String status;
         String sort;
-        System.out.print("Enter number of tasks to be completed: ");
-        tCount = sc.nextInt();
-        for (int i = 0; i < tCount; i++)
+
+        // Input validation for the number of tasks
+        boolean validInput = false;
+        while (!validInput)
         {
-            System.out.println("---------------------------------------------------------------------------------------------------");
+            System.out.print("Enter number of tasks to be completed: ");
+            if (sc.hasNextInt()) {
+                tCount = sc.nextInt();
+                if (tCount > 0) {
+                    validInput = true;
+                } else {
+                    System.out.println("Number of tasks must be a positive integer.");
+                }
+            } else {
+                System.out.println("Please enter a valid number.");
+                sc.next(); // Clear the invalid input
+            }
+        }
+
+        for (int i = 0; i < tCount; i++) {
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.print("Enter task name: ");
             tname = sc.next();
             tname += sc.nextLine();
-            System.out.println("The task priority ranges from 1 to 10, low value represents high priority.");
-            System.out.print("Enter task priority: ");
-            priority = sc.nextInt();
-            System.out.print("Enter the required completion time in minutes for the task: ");
-            etime = sc.nextDouble();
-            status = "Pending";
-            if (priority > 10 || priority < 1)
-            {
-                System.out.print("Enter valid priority value: ");
-                priority = sc.nextInt();
+
+            // Input validation for task priority
+            validInput = false;
+            while (!validInput) {
+                System.out.println("The task priority ranges from 1 to 10, low value represents high priority.");
+                System.out.print("Enter task priority: ");
+                if (sc.hasNextInt()) {
+                    priority = sc.nextInt();
+                    if (priority >= 1 && priority <= 10) {
+                        validInput = true;
+                    } else {
+                        System.out.println("Priority must be between 1 and 10.");
+                    }
+                } else {
+                    System.out.println("Please enter a valid number.");
+                    sc.next(); // Clear the invalid input
+                }
             }
+
+            // Input validation for task execution time
+            validInput = false;
+            while (!validInput) {
+                System.out.print("Enter the required completion time in minutes for the task: ");
+                if (sc.hasNextDouble()) {
+                    etime = sc.nextDouble();
+                    if (etime > 0) {
+                        validInput = true;
+                    } else {
+                        System.out.println("Task execution time must be a positive number.");
+                    }
+                } else {
+                    System.out.println("Please enter a valid number.");
+                    sc.next(); // Clear the invalid input
+                }
+            }
+
+            status = "Pending";
             lst.insert(i, tname, priority, etime, status);
         }
         AVLTreeByPriority avlTreeByPriority = new AVLTreeByPriority();
         Node current = lst.head;
-        while (current != null)
-        {
+        while (current != null) {
             avlTreeByPriority.insert(current);
             current = current.next;
         }
 
         AVLTreeByTime avlTreeByTime = new AVLTreeByTime();
         Node current2 = lst.head;
-        while (current2 != null)
-        {
+        while (current2 != null) {
             avlTreeByTime.insert(current2);
             current2 = current2.next;
         }
 
-        System.out.println("If you want to execute the tasks according to their priority ascending order, type p");
-        System.out.println("If you want to sort tasks by time (Highest time to lowest),type td");
-        System.out.println("If you want to sort tasks by time (Lowest time to highest),type ta");
-        sort = sc.next();
-        switch (sort)
-        {
-            case "P":
-                avlTreeByPriority.inorder();
-                break;
-            case "p":
-                avlTreeByPriority.inorder();
-                break;
-            case "TD":
-                avlTreeByTime.inorderHighToLow();
-            case "td":
-                avlTreeByTime.inorderHighToLow();
-                break;
-            case "TA":
-                avlTreeByTime.inorderLowToHigh();
-                break;
-            case "ta":
-                avlTreeByTime.inorderLowToHigh();
-                break;
-            default:
-                System.out.print("Enter valid answer: ");
-                break;
-        }
-        System.out.println("Would you wish to start completing the tasks in the sorted order (y/n): ");
-        String conf = sc.next();
-        switch (conf) {
-            case "y":
-            case "Y":
-                if (sort.equalsIgnoreCase("p")) {
-                    avlTreeByPriority.ETask();
-                } else if (sort.equalsIgnoreCase("td")) {
-                    avlTreeByTime.ETask(false); // For time high to low
-                } else if (sort.equalsIgnoreCase("ta")) {
-                    avlTreeByTime.ETask(true); // For time low to high
-                }
-                break;
-            case "n":
-                break;
-            case "N":
-                break;
-            default:
-                System.out.println("Enter valid answer: ");
-                break;
-        }
+        boolean validSort = false;
+        do {
+            System.out.println("If you want to execute the tasks according to their priority ascending order, type p");
+            System.out.println("If you want to sort tasks by time (Highest time to lowest), type td");
+            System.out.println("If you want to sort tasks by time (Lowest time to highest), type ta");
+            sort = sc.next().toLowerCase();
+            switch (sort) {
+                case "p":
+                    avlTreeByPriority.inorder();
+                    validSort = true;
+                    break;
+                case "td":
+                    avlTreeByTime.inorderHighToLow();
+                    validSort = true;
+                    break;
+                case "ta":
+                    avlTreeByTime.inorderLowToHigh();
+                    validSort = true;
+                    break;
+                default:
+                    System.out.println("Enter a valid sorting option.");
+                    break;
+            }
+        } while (!validSort);
+
+        boolean validStart = false;
+        do {
+            System.out.println("Would you wish to start completing the tasks in the sorted order (y/n): ");
+            String conf = sc.next().toLowerCase();
+            switch (conf) {
+                case "y":
+                    validStart = true;
+                    if (sort.equals("p")) {
+                        avlTreeByPriority.ETask();
+                    } else if (sort.equals("td")) {
+                        avlTreeByTime.ETask(false); // For time high to low
+                    } else if (sort.equals("ta")) {
+                        avlTreeByTime.ETask(true); // For time low to high
+                    }
+                    break;
+                case "n":
+                    validStart = true;
+                    break;
+                default:
+                    System.out.println("Enter a valid choice.");
+                    break;
+            }
+        } while (!validStart);
+
+        avlTreeByPriority.display(avlTreeByPriority.root);
     }
 }
