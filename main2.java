@@ -270,6 +270,31 @@ class AVLTreeByPriority {
 
         sc.close();
     }
+    void display(AVLNodeByPriority root) {
+        // Print the table header
+        System.out.println("+----------------------+------------+---------------+-------------------+");
+        System.out.println("| Task Name            | Priority   | Execution Time| State             |");
+        System.out.println("+----------------------+------------+---------------+-------------------+");
+
+        // Traverse the AVL tree to print tasks and their states
+        inOrderTraversal(root);
+
+        // Print the table footer
+        System.out.println("+----------------------+------------+---------------+-------------------+");
+    }
+
+    // In-order traversal of the AVL tree to print tasks and their states
+    void inOrderTraversal(AVLNodeByPriority node) {
+        if (node != null) {
+            inOrderTraversal(node.left);
+
+            // Print task details
+            System.out.printf("| %-20s | %-10s | %-14s | %-15s |\n",
+                    node.data.tName, node.data.tPriority, node.data.tETime, node.data.tState);
+
+            inOrderTraversal(node.right);
+        }
+    }
 
     void getSortedTasks(AVLNodeByPriority node, ArrayList<AVLNodeByPriority> sortedTasks) {
         if (node != null) {
@@ -278,25 +303,6 @@ class AVLTreeByPriority {
             getSortedTasks(node.right, sortedTasks);
         }
     }
-    void display() //The method to display the task details
-    {
-        // Print the sorted values in a table
-        System.out.println("+----------------------+------------+---------------+-------------------+");
-        System.out.println("| Task Name            | Priority   | Execution Time| State             |");
-        System.out.println("+----------------------+------------+---------------+-------------------+");
-        for (String value : sortedValues) {
-            String[] parts = value.split(" "); // Split the value by space
-            String taskName = parts[0] + " " + parts[1]+" "+parts[2]; // Combine the first two parts as the task name
-            String priority = parts[3]; // Get the priority
-            String executionTime = parts[4]; // Get the execution time
-            String state = parts[5]; // Get the state
-
-            // Print the values in the table
-            System.out.printf("| %-20s | %-10s | %-14s | %-15s |\n", taskName, priority, executionTime, state);
-        }
-        System.out.println("+----------------------+------------+---------------+-------------------+");
-    }
-
 }
 class AVLNodeByTime { //The class for the AVL Tree sorting by time
     int tID; //Task ID
